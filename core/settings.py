@@ -15,7 +15,15 @@ SECRET_KEY = 'django-insecure-ppyd*yz&iy*2b7&t9i1=)o!td32of885yxdo5#(tz$kf^7c)kj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["recipehub.onrender.com"]   # okay for now
+ALLOWED_HOSTS = [
+    "recipehub-mvvs.onrender.com",
+    "127.0.0.1",
+    "localhost",
+] # okay for now
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://recipehub-mvvs.onrender.com",
+]
 
 
 # Application definition
