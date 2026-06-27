@@ -1,0 +1,145 @@
+{% extends "home/base.html" %}
+
+{% block start %}
+
+<div class="container mt-5">
+
+    <!-- Hero Section -->
+    <div class="p-5 mb-5 bg-light rounded-4 shadow text-center">
+
+        <h1 class="display-4 fw-bold">
+            🍽️ Welcome to RecipeHub
+        </h1>
+
+        <p class="lead mt-3">
+            Discover delicious recipes from our community or share your own with food lovers around the world.
+        </p>
+
+        <hr>
+
+        {% if request.user.is_authenticated %}
+
+            <h4 class="mb-4">
+                👋 Welcome,
+                <span class="text-success">
+                    {{ request.user.username }}
+                </span>
+            </h4>
+
+           <a href="/home/" class="btn btn-primary btn-lg me-2">
+    🍲 Explore Recipes
+</a>
+
+            {% if request.user.profile.role == "Creator" %}
+
+<a href="/receipes/" class="btn btn-success btn-lg me-2">
+    ➕ Add Recipe
+</a>
+
+<a href="/my-recipes/" class="btn btn-warning btn-lg">
+    📖 My Recipes
+</a>
+
+{% endif %}
+
+        {% else %}
+
+            <a href="/accounts/login/" class="btn btn-primary btn-lg me-2">
+                Login
+            </a>
+
+            <a href="/accounts/register/" class="btn btn-success btn-lg">
+                Register
+            </a>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Features -->
+
+    <div class="row text-center">
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h2>🍳</h2>
+
+                    <h4>Browse Recipes</h4>
+
+                    <p>
+                        Search recipes by category and discover tasty dishes.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h2>❤️</h2>
+
+                    <h4>Like Recipes</h4>
+
+                    <p>
+                        Show appreciation by liking your favorite recipes.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h2>👨‍🍳</h2>
+
+                    <h4>Become a Creator</h4>
+
+                    <p>
+                        Register, upload recipes, edit them, and manage your collection.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CTA -->
+
+    <div class="text-center mt-5">
+
+        <h2>
+            Ready to start cooking?
+        </h2>
+
+        <p class="text-muted">
+            Join thousands of food lovers and share your best recipes.
+        </p>
+
+        <a href="/home/" class="btn btn-danger btn-lg">
+    🍽️ View All Recipes
+</a>
+
+    </div>
+
+</div>
+
+{% endblock %}

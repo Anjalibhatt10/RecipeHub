@@ -1,0 +1,222 @@
+{% extends "home/base.html" %}
+
+{% block start %}
+
+<style>
+
+body{
+    background:#f5f7fa;
+}
+
+.hero{
+    background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+    padding:70px 20px;
+    text-align:center;
+    color:white;
+}
+
+.hero h1{
+    font-weight:700;
+}
+
+.search-box{
+    max-width:550px;
+    margin:25px auto 0;
+}
+
+.card{
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card img{
+    height:220px;
+    object-fit:cover;
+}
+
+.recipe-container{
+    padding:50px 0;
+}
+
+.recipe-title{
+    font-weight:700;
+}
+
+.footer{
+    text-align:center;
+    padding:20px;
+    background:white;
+    margin-top:50px;
+}
+
+</style>
+
+<!-- Hero -->
+
+<div class="hero">
+
+    <h1>🍽️ Recipe Collection</h1>
+
+    <p>
+        Discover delicious recipes shared by our community
+    </p>
+
+    <!-- Search -->
+
+    <form method="GET" action="/home/" class="search-box">
+
+        <div class="input-group">
+
+            <input
+                type="text"
+                name="search"
+                class="form-control"
+                placeholder="Search recipe..."
+                value="{{ request.GET.search }}">
+
+            <button class="btn btn-dark">
+                Search
+            </button>
+
+        </div>
+
+    </form>
+
+    <!-- Categories -->
+
+    <div class="mt-4">
+
+        <a href="/home/" class="btn btn-light">
+            All
+        </a>
+
+        <a href="?category=Breakfast" class="btn btn-warning">
+            🍳 Breakfast
+        </a>
+
+        <a href="?category=Lunch" class="btn btn-primary">
+            🍛 Lunch
+        </a>
+
+        <a href="?category=Dinner" class="btn btn-dark">
+            🍽️ Dinner
+        </a>
+
+        <a href="?category=Dessert" class="btn btn-danger">
+            🍰 Dessert
+        </a>
+
+    </div>
+
+</div>
+
+<!-- Recipes -->
+
+<div class="container recipe-container">
+
+    <div class="row">
+
+        {% for receipe in receipes %}
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow">
+
+                <a href="/recipe/{{ receipe.id }}/"
+                   style="text-decoration:none;color:inherit;">
+
+                    {% if receipe.image %}
+                    <img
+                        src="{{ receipe.image.url }}"
+                        class="card-img-top">
+                    {% endif %}
+
+                    <div class="card-body">
+
+                        {% if receipe.category == "Breakfast" %}
+                            <span class="badge bg-warning text-dark">
+                                🍳 Breakfast
+                            </span>
+
+                        {% elif receipe.category == "Lunch" %}
+                            <span class="badge bg-primary">
+                                🍛 Lunch
+                            </span>
+
+                        {% elif receipe.category == "Dinner" %}
+                            <span class="badge bg-dark">
+                                🍽️ Dinner
+                            </span>
+
+                        {% elif receipe.category == "Dessert" %}
+                            <span class="badge bg-danger">
+                                🍰 Dessert
+                            </span>
+
+                        {% endif %}
+
+                        <h4 class="recipe-title mt-3">
+                            {{ receipe.name }}
+                        </h4>
+
+                        <p>
+                            {{ receipe.description|truncatewords:25 }}
+                        </p>
+
+                        <p class="mt-2">
+                            ❤️ Likes: {{ receipe.like_set.count }}
+                        </p>
+
+                    </div>
+
+                </a>
+
+                <div class="card-footer bg-white border-0 text-center">
+
+                    <a
+                        href="/like-recipe/{{ receipe.id }}/"
+                        class="btn btn-outline-danger">
+
+                        ❤️ Like
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12 text-center">
+
+            <h2>
+                😔 No Recipes Found
+            </h2>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- Footer -->
+
+<div class="footer">
+
+    <p>
+        © 2026 RecipeHub | Made with Django ❤️
+    </p>
+
+</div>
+
+{% endblock %}

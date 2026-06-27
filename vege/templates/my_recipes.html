@@ -1,0 +1,87 @@
+{% extends "home/base.html" %}
+
+{% block start %}
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2>📖 My Recipes</h2>
+            <p class="text-muted">
+                Welcome, <strong>{{ request.user.username }}</strong>
+            </p>
+        </div>
+
+        <a href="/home/" class="btn btn-secondary">
+            ⬅ Back to Home
+        </a>
+
+    </div>
+
+    {% if receipes %}
+
+    <div class="row">
+
+        {% for receipe in receipes %}
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                {% if receipe.image %}
+                <img src="{{ receipe.image.url }}"
+                     class="card-img-top"
+                     style="height:220px; object-fit:cover;">
+                {% endif %}
+
+                <div class="card-body">
+
+                    <h4>{{ receipe.name }}</h4>
+
+                    <p>
+                        {{ receipe.description|truncatewords:20 }}
+                    </p>
+
+                </div>
+
+                <div class="card-footer bg-white">
+
+                    <a href="/edit-recipe/{{ receipe.id }}/"
+                       class="btn btn-warning btn-sm">
+                        ✏ Edit
+                    </a>
+
+                    <a href="/delete-recipe/{{ receipe.id }}/"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Are you sure you want to delete this recipe?')">
+                        🗑 Delete
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="text-center mt-5">
+
+        <h3>😔 No recipes added yet.</h3>
+
+        <a href="/receipes/" class="btn btn-success mt-3">
+            ➕ Add Your First Recipe
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

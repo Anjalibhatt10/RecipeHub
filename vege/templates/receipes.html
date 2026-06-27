@@ -1,0 +1,254 @@
+{% extends "home/base.html" %}
+
+{% block start %}
+
+<style>
+    .form-card {
+        max-width: 650px;
+        margin: 40px auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .form-header {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        padding: 35px;
+        text-align: center;
+        color: white;
+    }
+    .form-header h2 { font-size: 28px; font-weight: 800; margin: 0; }
+    .form-header p { opacity: 0.85; margin: 8px 0 0; font-size: 15px; }
+    .form-body { padding: 35px; }
+    .form-label { font-weight: 600; color: #2d3748; font-size: 14px; }
+    .form-control {
+        border-radius: 10px;
+        border: 1.5px solid #e2e8f0;
+        padding: 10px 14px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+    .form-control:focus {
+        border-color: #11998e;
+        box-shadow: 0 0 0 3px rgba(17,153,142,0.15);
+    }
+    textarea.form-control { resize: vertical; min-height: 120px; }
+    .btn-submit {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 40px;
+        font-size: 16px;
+        font-weight: 700;
+        width: 100%;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(17,153,142,0.4);
+        color: white;
+    }
+    .file-upload-area {
+        border: 2px dashed #11998e;
+        border-radius: 10px;
+        padding: 25px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: #f0fdf4;
+    }
+    .file-upload-area:hover { background: #dcfce7; }
+    .file-upload-area .icon { font-size: 36px; }
+    .file-upload-area p { color: #11998e; font-weight: 600; margin: 8px 0 0; font-size: 14px; }
+    .file-upload-area input[type="file"] { display: none; }
+    .divider { border: none; border-top: 1.5px solid #e2e8f0; margin: 24px 0; }
+
+    .recipe-table-card {
+        max-width: 1000px;
+        margin: 40px auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        padding: 30px;
+    }
+    .recipe-table-card h3 {
+        font-weight: 800;
+        color: #2d3748;
+        margin-bottom: 20px;
+    }
+    table img {
+        object-fit: cover;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="container">
+    <div class="form-card">
+
+        <!-- Header -->
+        <div class="form-header">
+            <div style="font-size:48px;">🍽️</div>
+            <h2>Add New Recipe</h2>
+            <p>Share your delicious recipe with the world!</p>
+        </div>
+
+        <!-- Form Body -->
+        <div class="form-body">
+
+            {% if success %}
+            <div class="alert alert-success text-center fw-bold">
+                ✅ Recipe added successfully!
+            </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" action="">
+                {% csrf_token %}
+
+                <!-- Recipe Name -->
+                <div class="mb-4">
+                    <label class="form-label">🍴 Recipe Name</label>
+                    <input type="text"
+                           name="receipe_name"
+                           class="form-control"
+                           placeholder="e.g. Butter Chicken, Pasta Carbonara..."
+                           required>
+                </div>
+
+                <!-- Recipe Description -->
+                <div class="mb-4">
+                    <label class="form-label">📝 Recipe Description</label>
+                    <textarea class="form-control"
+                              name="receipe_description"
+                              rows="5"
+                              placeholder="Describe your recipe, ingredients, steps..."></textarea>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Recipe Image -->
+                <div class="mb-4">
+                    <label class="form-label">📸 Recipe Image</label>
+                    <div class="file-upload-area" onclick="document.getElementById('imageInput').click()">
+                        <div class="icon">🖼️</div>
+                        <p>Click to upload image</p>
+                        <small class="text-muted">PNG, JPG, JPEG supported</small>
+                        <input type="file"
+                               id="imageInput"
+                               name="receipe_image"
+                               accept="image/*"
+                               onchange="showFileName(this)">
+                    </div>
+                    <p id="fileName" class="text-success mt-2 text-center fw-bold"></p>
+                </div>
+
+                <hr class="divider">
+                <div class="mb-4">
+    <label class="form-label">🏷️ Category</label>
+
+    <select name="category" class="form-control" required>
+
+        <option value="">Select Category</option>
+
+        <option value="Breakfast">Breakfast</option>
+        <option value="Lunch">Lunch</option>
+        <option value="Dinner">Dinner</option>
+        <option value="Dessert">Dessert</option>
+
+    </select>
+</div>
+
+<hr class="divider">
+
+
+
+<!-- Submit Button -->
+<button type="submit" class="btn btn-submit">
+    🚀 Submit Recipe
+</button>
+
+                <div class="text-center mt-3">
+                    <a href="/home/" class="text-muted" style="font-size:14px;">← Back to Home</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Recipe List Table -->
+    <div class="recipe-table-card">
+        <h3>📋 All Recipes</h3>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Recipe Name</th>
+                    <th scope="col">Recipe Description</th>
+                    <th scope="col">Image</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for receipe in receipes %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ receipe.name }}</td>
+                    <td>{{ receipe.description }}</td>
+                    <td>
+                        {% if receipe.image %}
+                            <img src="{{ receipe.image.url }}" width="80" height="80">
+                        {% else %}
+                            <span class="text-muted">No Image</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-4">
+                        No recipes yet! Add your first recipe above. 👆
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<div class="mb-4">
+    <label class="form-label">🏷️ Category</label>
+
+    <select
+        name="category"
+        class="form-control">
+
+        <option value="Breakfast">
+            Breakfast
+        </option>
+
+        <option value="Lunch">
+            Lunch
+        </option>
+
+        <option value="Dinner">
+            Dinner
+        </option>
+
+        <option value="Dessert">
+            Dessert
+        </option>
+
+    </select>
+</div>
+
+<script>
+    function showFileName(input) {
+        const fileName = input.files[0]?.name;
+        if (fileName) {
+            document.getElementById('fileName').textContent = '✅ ' + fileName + ' selected';
+        }
+    }
+</script>
+
+{% endblock %}

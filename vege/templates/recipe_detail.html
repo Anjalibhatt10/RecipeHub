@@ -1,0 +1,55 @@
+{% extends "home/base.html" %}
+
+{% block start %}
+
+<div class="container mt-5">
+
+    <a href="/home/" class="btn btn-secondary mb-4">
+        ← Back
+    </a>
+
+    <div class="card shadow-lg">
+
+        {% if recipe.image %}
+            <img src="{{ recipe.image.url }}"
+                 class="card-img-top"
+                 style="height:450px;object-fit:cover;">
+        {% endif %}
+
+        <div class="card-body">
+
+            <h1 class="mb-3">
+                {{ recipe.name }}
+            </h1>
+
+            <span class="badge bg-success">
+                {{ recipe.category }}
+            </span>
+
+            <hr>
+
+            <h4>Description</h4>
+
+            <p style="font-size:18px;">
+                {{ recipe.description }}
+            </p>
+
+            <p>
+                ❤️ Likes:
+                {{ recipe.like_set.count }}
+            </p>
+
+            <a href="/like-recipe/{{ recipe.id }}/"
+               class="btn btn-danger">
+
+                ❤️ Like
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

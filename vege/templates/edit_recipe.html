@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Recipe</title>
+</head>
+<body>
+
+<h1>Edit Recipe</h1>
+
+<form method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    <input
+        type="text"
+        name="receipe_name"
+        value="{{ recipe.name }}"
+        required>
+
+    <br><br>
+
+    <textarea
+        name="receipe_description"
+        rows="5">{{ recipe.description }}</textarea>
+
+    <br><br>
+
+    {% if recipe.image %}
+        <img src="{{ recipe.image.url }}" width="250">
+        <br><br>
+    {% endif %}
+
+    <input
+        type="file"
+        name="receipe_image">
+
+    <br><br>
+
+    <button type="submit">
+        Update Recipe
+    </button>
+
+</form>
+
+</body>
+</html>

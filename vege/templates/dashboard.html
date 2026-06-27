@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+
+    <style>
+
+    body{
+        font-family:Arial;
+        background:#f4f6f9;
+        padding:40px;
+    }
+
+    .card{
+        background:white;
+        padding:30px;
+        border-radius:15px;
+        box-shadow:0 5px 15px rgba(0,0,0,.1);
+        width:350px;
+        margin:auto;
+        text-align:center;
+    }
+
+    .count{
+        font-size:50px;
+        color:#28a745;
+        font-weight:bold;
+    }
+
+    a{
+        display:block;
+        margin-top:15px;
+        text-decoration:none;
+        padding:10px;
+        background:#007bff;
+        color:white;
+        border-radius:8px;
+    }
+
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>👋 Welcome {{ request.user.username }}</h1>
+
+    <h3>Total Recipes</h3>
+
+    <div class="count">
+        {{ total_recipes }}
+    </div>
+
+    <a href="/receipes/">
+        ➕ Add Recipe
+    </a>
+
+    <a href="/my-recipes/">
+        📋 My Recipes
+    </a>
+
+    <a href="/all-recipes/">
+        🍽️ All Recipes
+    </a>
+
+</div>
+
+</body>
+</html>
