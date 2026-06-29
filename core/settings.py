@@ -1,20 +1,14 @@
 from pathlib import Path
 import os
 import dj_database_url
-import cloudinary
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ppyd*yz&iy*2b7&t9i1=)o!td32of885yxdo5#(tz$kf^7c)kj'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "recipehub-mvvs.onrender.com",
@@ -29,20 +23,28 @@ CSRF_TRUSTED_ORIGINS = [
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
-# Application definition
+# ── Cloudinary Config ─────────────────────────────────────
+# Must be configured BEFORE INSTALLED_APPS
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY':    os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
 
+
+# ── Installed Apps ────────────────────────────────────────
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
-    'cloudinary',
+    'cloudinary_storage',           # ← BEFORE staticfiles
     'django.contrib.staticfiles',
+    'cloudinary',                   # ← After staticfiles
     'accounts',
     'home',
-    'vege'
+    'vege',
 ]
 
 
@@ -77,93 +79,59 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
+# ── Database ──────────────────────────────────────────────
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
     )
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
+# ── Password Validation ───────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
-
+# ── Internationalisation ──────────────────────────────────
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
-# ──────────────────────────────────────────────────────────
-# Static files (CSS, JavaScript, Images that come WITH your code)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
-# ──────────────────────────────────────────────────────────
-
+# ── Static Files ──────────────────────────────────────────
 STATIC_URL = '/static/'
 
-# Folder(s) Django looks in for static files DURING DEVELOPMENT
 STATICFILES_DIRS = [
     BASE_DIR / 'public' / 'static',
 ]
 
-# Folder where `collectstatic` copies everything for PRODUCTION
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
-# ──────────────────────────────────────────────────────────
-# Media files (User UPLOADED content e.g. recipe images)
-# ──────────────────────────────────────────────────────────
-
+# ── Media / Cloudinary Storage ────────────────────────────
 MEDIA_URL = '/media/'
-
-# Where uploaded files are actually stored on disk → public/media/
 MEDIA_ROOT = BASE_DIR / 'public' / 'media'
-
-
-# Default auto field
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# Authentication Settings
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/home/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
-
-
-
-
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
-}
 
 STORAGES = {
     "default": {
+        # ← All ImageField uploads go to Cloudinary
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
+        # ← Static files served via WhiteNoise
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+
+# ── Auth ──────────────────────────────────────────────────
+LOGIN_URL          = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/home/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
