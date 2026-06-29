@@ -8,7 +8,7 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = 'django-insecure-ppyd*yz&iy*2b7&t9i1=)o!td32of885yxdo5#(tz$kf^7c)kj'
 
-DEBUG = True
+DEBUG =  os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
     "recipehub-mvvs.onrender.com",
@@ -127,6 +127,8 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # ── Auth ──────────────────────────────────────────────────
