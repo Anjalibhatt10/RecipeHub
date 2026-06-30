@@ -1,14 +1,12 @@
 from pathlib import Path
 import os
 import dj_database_url
-from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = 'django-insecure-ppyd*yz&iy*2b7&t9i1=)o!td32of885yxdo5#(tz$kf^7c)kj'
 
-DEBUG =  os.environ.get("DEBUG", "False") == "True"
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "recipehub-mvvs.onrender.com",
@@ -30,6 +28,10 @@ CLOUDINARY_STORAGE = {
     'API_KEY':    os.environ.get('CLOUDINARY_API_KEY'),
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
+
+# Debug: print to verify env vars are loading (remove after fixing)
+print("🔍 CLOUDINARY_CLOUD_NAME:", os.environ.get('CLOUDINARY_CLOUD_NAME'))
+print("🔍 CLOUDINARY_API_KEY:", os.environ.get('CLOUDINARY_API_KEY'))
 
 
 # ── Installed Apps ────────────────────────────────────────
@@ -108,7 +110,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'public' / 'static',
-]
+] if (BASE_DIR / 'public' / 'static').exists() else []
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
@@ -123,11 +125,18 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-    "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-},
+        # ← Plain Django static storage (no WhiteNoise compression at
+        #    collectstatic time — avoids race-condition FileNotFoundError
+        #    on Windows). WhiteNoiseMiddleware still serves + compresses
+        #    files on-the-fly at request time, so this is safe.
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
 }
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# Legacy setting kept for compatibility with django-cloudinary-storage's
+# custom collectstatic command, which still checks STATICFILES_STORAGE
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 
 # ── Auth ──────────────────────────────────────────────────
